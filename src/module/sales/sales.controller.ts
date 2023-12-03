@@ -1,13 +1,21 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
+import { FindSalesDto } from './dto/find';
+import { Response } from 'src/prototypes/formatters/response';
 
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
+  @Get()
+  async getAll(@Query() query: FindSalesDto) {
+    const [result, count] = await this.salesService.getAllSales(query);
+    return Response.findSuccess([result, count]);
+  }
+
   @Post()
-  findAll(@Body() dto: CreateSaleDto) {
-    return this.salesService.findAndCount(dto);
+  async findAll(@Body() dto: CreateSaleDto) {
+    return await this.salesService.createSales(dto);
   }
 }

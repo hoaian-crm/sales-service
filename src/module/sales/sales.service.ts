@@ -8,6 +8,7 @@ import {
 } from 'src/prototypes/gen/ts/interfaces/product';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateSaleDto } from './dto/create-sale.dto';
+import { FindSalesDto } from './dto/find';
 
 @Injectable()
 export class SalesService implements OnModuleInit {
@@ -23,7 +24,28 @@ export class SalesService implements OnModuleInit {
       this.client.getService<IProductController>('IProductController');
   }
 
-  async findAndCount(dto: CreateSaleDto) {
-    return await this.productModule.Get({ id: dto.product_id });
+  async getAllSales(query: FindSalesDto) {
+    return await this.salesRepository.findAndCount({
+      take: query.limit,
+      skip: (query.offset - 1) * query.limit,
+    });
+  }
+
+  async createSales(dto: CreateSaleDto) {
+    const listProduct = dto.product.map((i) => i.product_id);
+
+    const arrayProducts = await this.productModule.GetById({
+      id: listProduct,
+    });
+
+    console.log('array', arrayProducts);
+
+    // const result = Object.fromEntries(
+    //   arrayProducts.products.map((item) => [item.id, item]),
+    // );
+
+    // console.log(result);
+
+    return arrayProducts;
   }
 }

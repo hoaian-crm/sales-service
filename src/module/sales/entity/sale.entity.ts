@@ -13,8 +13,8 @@ export class Sale {
   status: string;
 
   @Column()
-  createAt: string;
+  createdAt: string;
 
   @Column()
-  updateAt: string;
+  updatedAt: string;
 }
