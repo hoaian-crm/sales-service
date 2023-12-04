@@ -3,13 +3,13 @@ import { IsArray, IsNumber, ValidateNested } from 'class-validator';
 
 class Product {
   @IsNumber()
-  product_id: number;
+  product: number;
 
   @IsNumber()
   amount: number;
 
-  @IsNumber()
-  discount: number;
+  // @IsNumber()
+  // discount: number;
 }
 
 export class CreateSaleDto {

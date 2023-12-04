@@ -7,6 +7,11 @@ import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { Product, observableHandler } from 'crm-prototypes';
 
+// enum STATUS {
+//   NEW = 'NEW',
+//   PENDING = 'PENDING',
+// }
+
 @Injectable()
 export class SalesService implements OnModuleInit {
   private productModule: Product.IProductController;
@@ -29,14 +34,26 @@ export class SalesService implements OnModuleInit {
   }
 
   async createSales(dto: CreateSaleDto) {
-    const listProduct = dto.product.map((i) => i.product_id);
+    const listIds = dto.product.map((i) => i.product);
 
-    const aa = await observableHandler(
-      await this.productModule.GetById({ id: listProduct }),
+    const listProduct = await observableHandler<Product.IProductResponse>(
+      await this.productModule.GetById({ id: listIds }),
     );
 
-    console.log(aa);
+    let product = [];
 
-    return aa;
+    for (let index = 0; index < listProduct.products.length; index++) {
+      const element = listProduct.products[index];
+      const item = dto.product.find((i) => i.product === element.id);
+      product = [
+        ...product,
+        {
+          product: element,
+          amount: item.amount,
+        },
+      ];
+    }
+
+    return product;
   }
 }

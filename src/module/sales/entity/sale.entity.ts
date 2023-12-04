@@ -5,7 +5,8 @@ export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @OneToOne(() => Customer)
+  // @ManyToOne(() => Customer)
+  // @JoinTable()
   // @JoinColumn()
   // customer: Customer;
 
