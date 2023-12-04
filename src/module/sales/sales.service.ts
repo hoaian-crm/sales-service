@@ -2,26 +2,23 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
 import { Repository } from 'typeorm';
-import {
-  IProductController,
-  protobufPackage,
-} from 'src/prototypes/gen/ts/interfaces/product';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
+import { Product, observableHandler } from 'crm-prototypes';
 
 @Injectable()
 export class SalesService implements OnModuleInit {
-  private productModule: IProductController;
+  private productModule: Product.IProductController;
 
   constructor(
     @InjectRepository(Sale) private salesRepository: Repository<Sale>,
-    @Inject(protobufPackage) private client: ClientGrpc,
+    @Inject(Product.protobufPackage) private client: ClientGrpc,
   ) {}
 
   onModuleInit() {
     this.productModule =
-      this.client.getService<IProductController>('IProductController');
+      this.client.getService<Product.IProductController>('IProductController');
   }
 
   async getAllSales(query: FindSalesDto) {
@@ -34,18 +31,12 @@ export class SalesService implements OnModuleInit {
   async createSales(dto: CreateSaleDto) {
     const listProduct = dto.product.map((i) => i.product_id);
 
-    const arrayProducts = await this.productModule.GetById({
-      id: listProduct,
-    });
+    const aa = await observableHandler(
+      await this.productModule.GetById({ id: listProduct }),
+    );
 
-    console.log('array', arrayProducts);
+    console.log(aa);
 
-    // const result = Object.fromEntries(
-    //   arrayProducts.products.map((item) => [item.id, item]),
-    // );
-
-    // console.log(result);
-
-    return arrayProducts;
+    return aa;
   }
 }

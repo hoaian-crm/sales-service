@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
-import { Response } from 'src/prototypes/formatters/response';
+import { Response } from 'crm-prototypes';
 
 @Controller('sales')
 export class SalesController {

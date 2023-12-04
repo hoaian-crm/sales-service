@@ -4,19 +4,19 @@ import { SalesController } from './sales.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { protobufPackage } from 'src/prototypes/gen/ts/interfaces/product';
+import { Product } from 'crm-prototypes';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Sale]),
     ClientsModule.register([
       {
-        name: protobufPackage,
+        name: Product.protobufPackage,
         transport: Transport.GRPC,
         options: {
           url: process.env.PRODUCT_GRPC || 'localhost:50051',
-          package: protobufPackage,
-          protoPath: 'src/prototypes/interfaces/product.proto',
+          package: Product.protobufPackage,
+          protoPath: 'node_modules/crm-prototypes/interfaces/product.proto',
           loader: {
             longs: Number,
           },
