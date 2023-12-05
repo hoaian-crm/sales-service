@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { CreateTableSales1701514886276 } from './1701514886276-create-table-sales';
+import { UpdateAmountCustomerProductTimestart1701787728932 } from './1701787728932-update-amount-customer-product-timestart';
 
 config();
 
@@ -12,5 +13,8 @@ export default new DataSource({
   database: process.env.PG_DATABASE,
   port: +process.env.PG_PORT,
   entities: [],
-  migrations: [CreateTableSales1701514886276],
+  migrations: [
+    CreateTableSales1701514886276,
+    UpdateAmountCustomerProductTimestart1701787728932,
+  ],
 });
