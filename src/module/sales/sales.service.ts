@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
@@ -19,6 +19,7 @@ export class SalesService implements OnModuleInit {
   constructor(
     @InjectRepository(Sale) private salesRepository: Repository<Sale>,
     @Inject(Product.protobufPackage) private client: ClientGrpc,
+    private dataSource: DataSource,
   ) {}
 
   onModuleInit() {
@@ -34,26 +35,28 @@ export class SalesService implements OnModuleInit {
   }
 
   async createSales(dto: CreateSaleDto) {
-    const listIds = dto.product.map((i) => i.product);
-
-    const listProduct = await observableHandler<Product.IProductResponse>(
-      await this.productModule.GetById({ id: listIds }),
-    );
-
-    let product = [];
-
-    for (let index = 0; index < listProduct.products.length; index++) {
-      const element = listProduct.products[index];
-      const item = dto.product.find((i) => i.product === element.id);
-      product = [
-        ...product,
-        {
-          product: element,
-          amount: item.amount,
-        },
-      ];
-    }
-
-    return product;
+    // const listIds = dto.product.map((i) => i.product);
+    // const productList: Product.IProductResponse = await observableHandler(
+    //   this.productModule.GetById({ id: listIds }),
+    // );
+    // if (!productList) throw new Error('error');
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
+    // try {
+    //   for (let index = 0; index < productList.products.length; index++) {
+    //     const element = productList.products[index];
+    //     const item = dto.product.find((i) => i.id === element.id);
+    //     // const record = this.salesRepository.create({ product: itemm });
+    //     consle.log('record', item);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   await queryRunner.rollbackTransaction();
+    //   throw error;
+    // } finally {
+    //   await queryRunner.release();
+    // }
+    // return productList;
   }
 }

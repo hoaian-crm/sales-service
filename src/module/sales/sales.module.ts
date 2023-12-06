@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Product } from 'crm-prototypes';
+import { Customer } from './entity/customer.entity';
+import * as ProductEntity from './entity/product.entiry';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Sale]),
+    TypeOrmModule.forFeature([Sale, Customer, ProductEntity.Product]),
     ClientsModule.register([
       {
         name: Product.protobufPackage,

@@ -1,21 +1,31 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Customer } from './customer.entity';
+import { Product } from './product.entiry';
 
 @Entity('sales')
 export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @ManyToOne(() => Customer)
-  // @JoinTable()
-  // @JoinColumn()
-  // customer: Customer;
+  @OneToMany(() => Customer, (customer) => customer.id)
+  customer: Customer;
+
+  @OneToMany(() => Product, (product) => product.id)
+  product: Product;
 
   @Column()
   status: string;
 
-  @Column()
-  createdAt: string;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @Column()
-  updatedAt: string;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

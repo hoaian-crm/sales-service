@@ -1,15 +1,13 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsNumber, ValidateNested } from 'class-validator';
+import { Product } from '../entity/product.entiry';
 
-class Product {
+class ProductDto {
   @IsNumber()
-  product: number;
+  product: Product;
 
   @IsNumber()
   amount: number;
-
-  // @IsNumber()
-  // discount: number;
 }
 
 export class CreateSaleDto {
@@ -18,6 +16,6 @@ export class CreateSaleDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Product)
-  product: Product[];
+  @Type(() => ProductDto)
+  product: ProductDto[];
 }
