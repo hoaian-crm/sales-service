@@ -2,23 +2,24 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
-import { Product } from './product.entiry';
 
 @Entity('sales')
 export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => Customer, (customer) => customer.id)
-  customer: Customer;
+  @ManyToOne(() => Customer)
+  @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
+  customer_id: number;
 
-  @OneToMany(() => Product, (product) => product.id)
-  product: Product;
+  @Column()
+  product: number;
 
   @Column()
   status: string;

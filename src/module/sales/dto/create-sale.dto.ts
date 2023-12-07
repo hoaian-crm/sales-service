@@ -1,10 +1,9 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsNumber, ValidateNested } from 'class-validator';
-import { Product } from '../entity/product.entiry';
 
 class ProductDto {
   @IsNumber()
-  product: Product;
+  product: number;
 
   @IsNumber()
   amount: number;

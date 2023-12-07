@@ -15,7 +15,7 @@ export class SalesController {
   }
 
   @Post()
-  async findAll(@Body() dto: CreateSaleDto) {
+  async createSales(@Body() dto: CreateSaleDto) {
     return await this.salesService.createSales(dto);
   }
 }
