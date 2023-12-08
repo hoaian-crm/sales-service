@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
+import { UpdateSaleDto } from './dto/update-sale.dto';
 
 @Injectable()
 export class SalesService {
@@ -23,10 +24,23 @@ export class SalesService {
     });
   }
 
+  async updateSales(id: number, dto: UpdateSaleDto) {
+    try {
+      const sale = await this.salesRepository.findOneById(id);
+      sale.amount = dto.amount;
+      const result = await this.salesRepository.save(sale);
+      return result;
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
   async createSales(dto: CreateSaleDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
+    let listId: number[] = [];
 
     try {
       for (let index = 0; index < dto.product.length; index++) {
@@ -36,9 +50,9 @@ export class SalesService {
           product: element.product,
           amount: element.amount,
         });
-        await queryRunner.manager.save(newSales);
+        const data = await queryRunner.manager.save(newSales);
+        listId = [...listId, data.id];
       }
-
       await queryRunner.commitTransaction();
     } catch (error) {
       console.log('error when create sales', error);
@@ -47,6 +61,13 @@ export class SalesService {
       await queryRunner.release();
     }
 
-    return { success: true };
+    const [response] = await this.salesRepository.findAndCount({
+      where: {
+        id: In(listId),
+      },
+      relations: ['product'],
+    });
+
+    return response;
   }
 }

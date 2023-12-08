@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { Response } from 'crm-prototypes';
+import { UpdateSaleDto } from './dto/update-sale.dto';
 
 @Controller('sales')
 export class SalesController {
@@ -18,5 +19,11 @@ export class SalesController {
   async createSales(@Body() dto: CreateSaleDto) {
     const data = await this.salesService.createSales(dto);
     return Response.createSuccess(data);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() dto: UpdateSaleDto) {
+    const data = await this.salesService.updateSales(+id, dto);
+    return data;
   }
 }
