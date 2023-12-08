@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
+import { Product } from './product.entiry';
 
 @Entity('sales')
 export class Sale {
@@ -16,10 +17,14 @@ export class Sale {
 
   @ManyToOne(() => Customer)
   @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
-  customer_id: number;
+  customer: Customer | number;
+
+  @ManyToOne(() => Product)
+  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
+  product: Product | number;
 
   @Column()
-  product: number;
+  amount: number;
 
   @Column()
   status: string;

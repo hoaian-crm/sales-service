@@ -16,6 +16,7 @@ export class SalesController {
 
   @Post()
   async createSales(@Body() dto: CreateSaleDto) {
-    return await this.salesService.createSales(dto);
+    const data = await this.salesService.createSales(dto);
+    return Response.createSuccess(data);
   }
 }
