@@ -17,6 +17,9 @@ export class SalesService {
       take: query.limit,
       skip: query.offset,
       relations: ['customer', 'product'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
@@ -26,23 +29,19 @@ export class SalesService {
     await queryRunner.startTransaction();
 
     try {
-      const listItem = dto.product.map((item) => item.product);
-
-      for (let index = 0; index < listItem.length; index++) {
-        const element = listItem[index];
-
+      for (let index = 0; index < dto.product.length; index++) {
+        const element = dto.product[index];
         const newSales = this.salesRepository.create({
           customer: dto.customer_id,
-          product: element,
-          amount: 1,
+          product: element.product,
+          amount: element.amount,
         });
-
         await queryRunner.manager.save(newSales);
       }
 
       await queryRunner.commitTransaction();
     } catch (error) {
-      console.log('error', error);
+      console.log('error when create sales', error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
