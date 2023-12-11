@@ -26,7 +26,11 @@ export class SalesService {
 
   async updateSales(id: number, dto: UpdateSaleDto) {
     try {
-      const sale = await this.salesRepository.findOneById(id);
+      const sale = await this.salesRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
       sale.amount = dto.amount;
       const result = await this.salesRepository.save(sale);
       return result;
