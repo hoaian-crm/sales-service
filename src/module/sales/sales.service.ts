@@ -74,4 +74,33 @@ export class SalesService {
 
     return response;
   }
+
+  async topTotalSold() {
+    const topProduct: Promise<
+      Array<{
+        product_id: number;
+        total_amount: number;
+        appearance_count: number;
+      }>
+    > = this.salesRepository
+      .createQueryBuilder('sales')
+      .select([
+        'sales.product_id',
+        'COUNT(*) as appearance_count',
+        'SUM(sales.amount) as total_amount',
+      ])
+      .groupBy('sales.product_id')
+      .orderBy('total_amount', 'DESC')
+      .addOrderBy('total_amount', 'DESC')
+      .getRawMany();
+
+    return topProduct;
+
+    // const topProduct = await this.salesRepository.find({
+    //   order: {
+    //     amount: 'DESC',
+    //   },
+    //   relations: ['product'],
+    // });
+  }
 }
