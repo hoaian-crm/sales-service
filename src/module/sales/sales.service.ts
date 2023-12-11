@@ -76,13 +76,7 @@ export class SalesService {
   }
 
   async topTotalSold() {
-    const topProduct: Promise<
-      Array<{
-        product_id: number;
-        total_amount: number;
-        appearance_count: number;
-      }>
-    > = this.salesRepository
+    const topProduct = this.salesRepository
       .createQueryBuilder('sales')
       .select([
         'sales.product_id',
@@ -95,12 +89,5 @@ export class SalesService {
       .getRawMany();
 
     return topProduct;
-
-    // const topProduct = await this.salesRepository.find({
-    //   order: {
-    //     amount: 'DESC',
-    //   },
-    //   relations: ['product'],
-    // });
   }
 }

@@ -7,6 +7,8 @@ export class StatisticController {
 
   @Get('sales')
   findAll() {
-    return this.statisticService.topTotalSoldProduct();
+    const data = this.statisticService.topTotalSoldProduct();
+
+    return data;
   }
 }
