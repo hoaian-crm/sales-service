@@ -20,17 +20,23 @@ export class StatisticService {
     //   values(query),
     // );
 
-    return await this.saleRepository
-      .createQueryBuilder('sale')
-      .select(
-        `sum(sale.amount) as "totalRevenue", date_part('hours', sale."createdAt") as time, product.name`,
+    return await this.saleRepository.query(
+      `
+      with top_products as (
+        select sum(sale.amount * product.price) as total_sale, product.id, product.price, product.name from sales sale
+        inner join products product on sale.product_id = product.id
+        where extract(epoch from sale."createdAt") between $1 and $2
+        group by (product.id)
+        order by total_sale DESC
+        limit 10000
       )
-      .innerJoin('products', 'product', 'product.id = sale.id')
-      .groupBy(`date_part('hours', sale."createdAt"), product.id`)
-      .where(
-        'extract(epoch from sale."createdAt") * 1000 >= :from and extract(epoch from sale."createdAt") * 1000 <= :to',
-      )
-      .setParameters(query)
-      .getRawMany();
+      select sum(sale.amount * top_product.price) as revenue, top_product.name, extract(${query.timeUnit} from sale."createdAt") as time, top_product.id from sales sale
+      inner join top_products top_product on top_product.id = sale.product_id
+      where extract(epoch from sale."createdAt") between $1 and $2
+      group by extract(${query.timeUnit} from sale."createdAt"), top_product.id, top_product.name
+      order by top_product.id
+    `,
+      [query.from, query.to],
+    );
   }
 }

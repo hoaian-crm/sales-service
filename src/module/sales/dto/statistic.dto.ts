@@ -1,9 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+
+export enum TimeUnit {
+  Date = 'date',
+  Week = 'week',
+  Month = 'month',
+  Year = 'year',
+}
 
 export class TotalRevenueByProduct {
   @IsString()
-  timeUnit: string;
+  @IsEnum(TimeUnit)
+  timeUnit: TimeUnit;
 
   @IsString()
   @IsOptional()
@@ -16,4 +24,8 @@ export class TotalRevenueByProduct {
   @Type(() => Number)
   @IsNumber()
   to: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  limit: number = 10;
 }
