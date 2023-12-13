@@ -28,7 +28,7 @@ export class StatisticService {
         where extract(epoch from sale."createdAt") between $1 and $2
         group by (product.id)
         order by total_sale DESC
-        limit 10000
+        limit 20
       )
       select sum(sale.amount * top_product.price) as revenue, top_product.name, extract(${query.timeUnit} from sale."createdAt") as time, top_product.id from sales sale
       inner join top_products top_product on top_product.id = sale.product_id
