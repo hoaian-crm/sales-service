@@ -34,6 +34,7 @@ export class SalesController {
 
   @Get('/total_revenue_by_product')
   async totalRevenueByProduct(@Query() query: TotalRevenueByProduct) {
-    return this.statisticService.totalRevenueByProduct(query);
+    const result = await this.statisticService.totalRevenueByProduct(query):
+    return Response.findSuccess([result, result.length]);
   }
 }
