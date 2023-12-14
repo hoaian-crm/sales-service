@@ -7,7 +7,7 @@ name: Docker
 
 on:
   push:
-    branches: ['unknow']
+    branches: ['master']
     # Publish semver tags as releases.
     tags: ['v*.*.*']
 env:
@@ -96,4 +96,4 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: rollout restart deployment mail
+          args: rollout restart deployment sale
