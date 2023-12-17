@@ -5,7 +5,6 @@ import { DataSource, In, Repository } from 'typeorm';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
-import { Product } from './entity/product.entiry';
 
 @Injectable()
 export class SalesService {
@@ -99,12 +98,6 @@ export class SalesService {
         'COUNT(*) as total',
         'SUM(sales.amount) AS amount',
       ])
-      .leftJoinAndMapOne(
-        'product_id', // alias của product
-        Product, // Entity Product
-        'products', // alias của table product trong câu truy vấn SQL
-        'products.id = product_id',
-      )
       .orderBy('amount', 'DESC')
       .addOrderBy('total', 'DESC')
       .groupBy('sales.product_id')
