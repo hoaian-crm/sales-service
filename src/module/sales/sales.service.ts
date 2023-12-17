@@ -5,6 +5,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import { Product } from './entity/product.entiry';
 
 @Injectable()
 export class SalesService {
@@ -76,16 +77,38 @@ export class SalesService {
   }
 
   async topTotalSold() {
+    // const topProduct = this.salesRepository
+    //   .createQueryBuilder('sales')
+    //   .select([
+    //     'sales.product_id',
+    //     'COUNT(*) as appearance_count',
+    //     'SUM(sales.amount) as total_amount',
+    //   ])
+    //   .leftJoinAndSelect('sales', 'products', 'sales.product_id = product.id')
+    //   .groupBy('sales.product_id')
+    //   .orderBy('total_amount', 'DESC')
+    //   .addOrderBy('total_amount', 'DESC')
+    //   .limit(10)
+    //   .getRawMany();
+    // return topProduct;
+
     const topProduct = this.salesRepository
       .createQueryBuilder('sales')
       .select([
         'sales.product_id',
-        'COUNT(*) as appearance_count',
-        'SUM(sales.amount) as total_amount',
+        'COUNT(*) as total',
+        'SUM(sales.amount) AS amount',
       ])
+      .leftJoinAndMapOne(
+        'product_id', // alias của product
+        Product, // Entity Product
+        'products', // alias của table product trong câu truy vấn SQL
+        'products.id = product_id',
+      )
+      .orderBy('amount', 'DESC')
+      .addOrderBy('total', 'DESC')
       .groupBy('sales.product_id')
-      .orderBy('total_amount', 'DESC')
-      .addOrderBy('total_amount', 'DESC')
+      .limit(10)
       .getRawMany();
 
     return topProduct;

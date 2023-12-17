@@ -1,12 +1,12 @@
-import { Optional } from '@nestjs/common';
-import { Transform } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { IsNumber } from 'class-validator';
 
 export class FindSalesDto {
-  @Optional()
-  @Transform(() => Number)
+  @Type(() => Number)
+  @IsNumber()
   limit: number;
 
-  @Optional()
-  @Transform(() => Number)
+  @Type(() => Number)
+  @IsNumber()
   offset: number;
 }
