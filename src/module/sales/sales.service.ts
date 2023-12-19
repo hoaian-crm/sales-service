@@ -5,6 +5,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import { Product } from './entity/product.entiry';
 
 @Injectable()
 export class SalesService {
@@ -76,31 +77,33 @@ export class SalesService {
   }
 
   async topTotalSold() {
-    // const topProduct = this.salesRepository
-    //   .createQueryBuilder('sales')
-    //   .select([
-    //     'sales.product_id',
-    //     'COUNT(*) as appearance_count',
-    //     'SUM(sales.amount) as total_amount',
-    //   ])
-    //   .leftJoinAndSelect('sales', 'products', 'sales.product_id = product.id')
-    //   .groupBy('sales.product_id')
-    //   .orderBy('total_amount', 'DESC')
-    //   .addOrderBy('total_amount', 'DESC')
-    //   .limit(10)
-    //   .getRawMany();
-    // return topProduct;
-
-    const topProduct = this.salesRepository
+    const topProduct: Array<{
+      count: number;
+      total: number;
+      id: number;
+      price: number;
+      name: string;
+      alias: string;
+    }> = await this.salesRepository
       .createQueryBuilder('sales')
-      .select([
-        'sales.product_id',
-        'COUNT(*) as total',
-        'SUM(sales.amount) AS amount',
-      ])
+      .select(
+        `
+        COUNT(*) as total,
+        SUM(sales.amount) AS amount
+        `,
+      )
+      .addSelect(
+        `
+        product.id as id,
+        product.price as price ,
+        product.name as name,
+        product.alias as alias
+      `,
+      )
+      .leftJoin(Product, 'product', 'product.id = sales.product_id')
       .orderBy('amount', 'DESC')
       .addOrderBy('total', 'DESC')
-      .groupBy('sales.product_id')
+      .groupBy('sales.product_id, product.id')
       .limit(10)
       .getRawMany();
 
