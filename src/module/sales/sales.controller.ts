@@ -5,10 +5,15 @@ import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
 import { ApiMetaData, AppController } from 'crm-permission';
+import { StatisticService } from './statistic.service';
+import { TotalRevenueByProduct } from './dto/statistic.dto';
 
 @AppController('sales')
 export class SalesController {
-  constructor(private readonly salesService: SalesService) {}
+  constructor(
+    private readonly salesService: SalesService,
+    private readonly statisticSerivce: StatisticService,
+  ) {}
 
   @ApiMetaData({
     description: 'User can get all sale',
@@ -41,5 +46,27 @@ export class SalesController {
   async update(@Param('id') id: string, @Body() dto: UpdateSaleDto) {
     const data = await this.salesService.updateSales(+id, dto);
     return data;
+  }
+
+  @ApiMetaData({
+    description: 'Get total sold products',
+    name: 'Get statistics',
+    policy: 'sales:topTotalSoldProduct',
+  })
+  @Get('top_total_sold_product')
+  async findAll() {
+    const data = await this.statisticSerivce.topTotalSold();
+    return data;
+  }
+
+  @ApiMetaData({
+    description: 'Get total_revenue_by_product',
+    name: 'Get total sold products',
+    policy: 'sales:total_revenue_by_product',
+  })
+  @Get('/total_revenue_by_product')
+  async totalRevenueByProduct(@Query() query: TotalRevenueByProduct) {
+    const result = await this.statisticSerivce.totalRevenueByProduct(query);
+    return Response.findSuccess([result, result.length]);
   }
 }
