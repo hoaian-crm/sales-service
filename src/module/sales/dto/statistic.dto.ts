@@ -29,3 +29,9 @@ export class TotalRevenueByProduct {
   @Type(() => Number)
   limit: number = 10;
 }
+
+export class TopTotalSoldProduct {
+  @IsNumber()
+  @Type(() => Number)
+  limit: number = 10;
+}

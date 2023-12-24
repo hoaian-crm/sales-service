@@ -6,7 +6,10 @@ import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
 import { ApiMetaData, AppController } from 'crm-permission';
 import { StatisticService } from './statistic.service';
-import { TotalRevenueByProduct } from './dto/statistic.dto';
+import {
+  TopTotalSoldProduct,
+  TotalRevenueByProduct,
+} from './dto/statistic.dto';
 
 @AppController('sales')
 export class SalesController {
@@ -54,9 +57,9 @@ export class SalesController {
     policy: 'sales:topTotalSoldProduct',
   })
   @Get('top_total_sold_product')
-  async findAll() {
-    const data = await this.statisticSerivce.topTotalSold();
-    return data;
+  async findAll(@Query() query: TopTotalSoldProduct) {
+    const data = await this.statisticSerivce.topTotalSold(query);
+    return Response.findSuccess([data, data.length]);
   }
 
   @ApiMetaData({

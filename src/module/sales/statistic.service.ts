@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entity/sale.entity';
 import { Repository } from 'typeorm';
 import { Product } from './entity/product.entiry';
-import { TotalRevenueByProduct } from './dto/statistic.dto';
+import {
+  TopTotalSoldProduct,
+  TotalRevenueByProduct,
+} from './dto/statistic.dto';
 
 @Injectable()
 export class StatisticService {
@@ -11,7 +14,7 @@ export class StatisticService {
     @InjectRepository(Sale) private salesRepository: Repository<Sale>,
   ) {}
 
-  async topTotalSold() {
+  async topTotalSold(query: TopTotalSoldProduct) {
     const topProduct: Array<{
       count: number;
       total: number;
@@ -39,7 +42,7 @@ export class StatisticService {
       .orderBy('amount', 'DESC')
       .addOrderBy('total', 'DESC')
       .groupBy('sales.product_id, product.id')
-      .limit(10)
+      .limit(query.limit)
       .getRawMany();
 
     return topProduct;
@@ -49,7 +52,7 @@ export class StatisticService {
     return await this.salesRepository.query(
       `
       with top_products as (
-        select sum(sale.amount * product.price) as total_sale, product.id, product.price, product.name from sales sale
+        select sum(sale.amount * product.price)::int as total_sale, product.id, product.price, product.name from sales sale
         inner join products product on sale.product_id = product.id
         where extract(epoch from sale."createdAt") between $1 and $2
         group by (product.id)
