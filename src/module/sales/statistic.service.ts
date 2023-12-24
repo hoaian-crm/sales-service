@@ -23,8 +23,8 @@ export class StatisticService {
       .createQueryBuilder('sales')
       .select(
         `
-        COUNT(*) as total,
-        SUM(sales.amount) AS amount
+        COUNT(*)::int as total,
+        SUM(sales.amount)::int AS amount
         `,
       )
       .addSelect(
