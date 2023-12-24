@@ -37,7 +37,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "crm-logger": "^1.0.3",
-    "crm-permission": "^1.0.6",
+    "crm-permission": "^1.0.7",
     "crm-prototypes": "^1.0.5",
     "lodash": "^4.17.21",
     "pg": "^8.11.3",

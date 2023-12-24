@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Response } from 'crm-prototypes';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
-import { ControllerMetaData, ApiMetaData, AppController } from 'crm-permission';
+import { ApiMetaData, AppController } from 'crm-permission';
 
 @AppController('sales')
 export class SalesController {

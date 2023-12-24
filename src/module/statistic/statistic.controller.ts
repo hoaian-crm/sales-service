@@ -1,8 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Get, Query } from '@nestjs/common';
 import { StatisticService } from './statistic.service';
 import { TotalRevenueByProduct } from '../sales/dto/statistic.dto';
 import { Response } from 'crm-prototypes';
-import { ControllerMetaData, ApiMetaData, AppController } from 'crm-permission';
+import { ApiMetaData, AppController } from 'crm-permission';
 
 @AppController('statistics', 'sales')
 export class StatisticController {
