@@ -2,39 +2,45 @@ import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Response } from 'crm-prototypes';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
-import { TotalRevenueByProduct } from './dto/statistic.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
-import { StatisticService } from './statistic.service';
+import { ControllerMetaData, ApiMetaData } from 'crm-permission';
 
+@ControllerMetaData()
 @Controller('sales')
 export class SalesController {
-  constructor(
-    private readonly salesService: SalesService,
-    private readonly statisticService: StatisticService,
-  ) {}
+  constructor(private readonly salesService: SalesService) {}
 
+  @ApiMetaData({
+    description: 'User can get all sale',
+    name: 'Get sales',
+    policy: 'sales',
+  })
   @Get()
   async getAll(@Query() query: FindSalesDto) {
     const [result, count] = await this.salesService.getAllSales(query);
     return Response.findSuccess([result, count]);
   }
 
+  @ApiMetaData({
+    description: 'User can create a order',
+    name: 'Create sale',
+    policy: 'sales:create',
+  })
   @Post()
   async createSales(@Body() dto: CreateSaleDto) {
     const data = await this.salesService.createSales(dto);
     return Response.createSuccess(data);
   }
 
+  @ApiMetaData({
+    description: 'User can edit a order',
+    name: 'Edit sale',
+    policy: 'sales:edit',
+  })
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateSaleDto) {
     const data = await this.salesService.updateSales(+id, dto);
     return data;
-  }
-
-  @Get('/total_revenue_by_product')
-  async totalRevenueByProduct(@Query() query: TotalRevenueByProduct) {
-    const result = await this.statisticService.totalRevenueByProduct(query);
-    return Response.findSuccess([result, result.length]);
   }
 }
