@@ -2,10 +2,9 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { StatisticService } from './statistic.service';
 import { TotalRevenueByProduct } from '../sales/dto/statistic.dto';
 import { Response } from 'crm-prototypes';
-import { ControllerMetaData, ApiMetaData } from 'crm-permission';
+import { ControllerMetaData, ApiMetaData, AppController } from 'crm-permission';
 
-@ControllerMetaData()
-@Controller('statistics')
+@AppController('statistics', 'sales')
 export class StatisticController {
   constructor(private readonly statisticService: StatisticService) {}
 

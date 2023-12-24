@@ -4,10 +4,9 @@ import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
-import { ControllerMetaData, ApiMetaData } from 'crm-permission';
+import { ControllerMetaData, ApiMetaData, AppController } from 'crm-permission';
 
-@ControllerMetaData()
-@Controller('sales')
+@AppController('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 

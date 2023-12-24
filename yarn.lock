@@ -3391,10 +3391,10 @@ crm-logger@^1.0.3:
     typeorm "^0.3.17"
     uuid "^9.0.1"
 
-crm-permission@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/crm-permission/-/crm-permission-1.0.4.tgz#97311979f00655593906c28315fca819de3babf7"
-  integrity sha512-4hf4yQKyhJig0SIDQPvvF4nwNfK5BbnTuv18JiMlU8F1vOzipTDhr7VXoVymWtj6Gsmeikljz2wy+2WStRLHqQ==
+crm-permission@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/crm-permission/-/crm-permission-1.0.6.tgz#2b3142ad7b0c38f561b8b3244f37753b27bcda61"
+  integrity sha512-Xe3Ym0cm/oACjZg8SeRP3km+bsz78mHxQjDAbkydPD+W5K7rNd2JDOKs2w/dfoDOpMx1z+APKiSdfKatoFk6GQ==
   dependencies:
     "@nestjs/common" "^10.0.0"
     "@nestjs/config" "^3.1.1"
