@@ -22,29 +22,20 @@ export class StatisticService {
       price: number;
       name: string;
       alias: string;
-    }> = await this.salesRepository
-      .createQueryBuilder('sales')
-      .select(
-        `
-        COUNT(*)::int as total,
-        SUM(sales.amount)::int AS amount
-        `,
-      )
-      .addSelect(
-        `
-        product.id as id,
-        product.price as price ,
-        product.name as name,
-        product.alias as alias
+    }> = await this.salesRepository.query(
+      `
+        with table_sales as (select sales.product_id, sum(amount)::int as amount, count(*)::int as "totalInOrder"
+          from sales 
+          group by product_id 
+          order by amount desc)
+          select id, name, alias,description ,amount, "totalInOrder", price
+          from table_sales 
+          left join products 
+          on products.id = table_sales.product_id
+          limit $1;
       `,
-      )
-      .leftJoin(Product, 'product', 'product.id = sales.product_id')
-      .orderBy('amount', 'DESC')
-      .addOrderBy('total', 'DESC')
-      .groupBy('sales.product_id, product.id')
-      .limit(query.limit)
-      .getRawMany();
-
+      [query.limit],
+    );
     return topProduct;
   }
 
