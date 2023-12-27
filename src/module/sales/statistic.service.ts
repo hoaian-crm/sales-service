@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
+  TimeLabels,
   TopTotalSoldProduct,
   TotalRevenue,
   TotalRevenueByProduct,
@@ -61,17 +62,18 @@ export class StatisticService {
   }
 
   async totalRevenue(query: TotalRevenue) {
-    console.log(query);
     return await this.salesRepository.query(
       `
         with sale_revenue as (
           select product.price * sale.amount as revenue, sale.* from sales sale
           left join products product on product.id  = sale.product_id
         )
-        select sum(sale.revenue) as revenue, trim(to_char(sale."createdAt", '${query.timeUnit}')) as "label"
+        select sum(sale.revenue) as revenue, replace(to_char(sale."createdAt", '${
+          TimeLabels[query.timeUnit]
+        }'), ' ', '') as "label"
         from sale_revenue sale
         where extract(epoch from sale."createdAt") between $1 and $2
-        group by to_char(sale."createdAt", '${query.timeUnit}')
+        group by to_char(sale."createdAt", '${TimeLabels[query.timeUnit]}')
         order by label
       `,
       [query.from, query.to],

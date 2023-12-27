@@ -3,16 +3,14 @@ import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export enum TimeUnit {
   Day = 'day',
-  Week = 'week',
   Month = 'month',
   Year = 'year',
 }
 
 export const TimeLabels = {
-  [TimeUnit.Day]: 'dd/mm',
-  [TimeUnit.Week]: 'week',
-  [TimeUnit.Month]: 'Month',
-  [TimeUnit.Year]: 'year',
+  [TimeUnit.Day]: 'YYYY-MM-DD',
+  [TimeUnit.Month]: 'YYYY-MM',
+  [TimeUnit.Year]: 'YYYY',
 };
 
 export class TotalRevenueByProduct {
