@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
+  GeneralStatistic,
   TimeLabels,
   TopTotalSoldProduct,
   TotalRevenue,
@@ -13,7 +14,7 @@ import { Sale } from './entity/sale.entity';
 export class StatisticService {
   constructor(
     @InjectRepository(Sale) private salesRepository: Repository<Sale>,
-  ) { }
+  ) {}
 
   async topTotalSold(query: TopTotalSoldProduct) {
     const topProduct: Array<{
@@ -68,14 +69,63 @@ export class StatisticService {
           select product.price * sale.amount as revenue, sale.* from sales sale
           left join products product on product.id  = sale.product_id
         )
-        select sum(sale.revenue)::int as revenue, replace(to_char(sale."createdAt", '${TimeLabels[query.timeUnit]
-      }'), ' ', '') as "label"
+        select sum(sale.revenue)::int as revenue, replace(to_char(sale."createdAt", '${
+          TimeLabels[query.timeUnit]
+        }'), ' ', '') as "label"
         from sale_revenue sale
         where extract(epoch from sale."createdAt") between $1 and $2
         group by to_char(sale."createdAt", '${TimeLabels[query.timeUnit]}')
         order by label
       `,
       [query.from, query.to],
+    );
+  }
+
+  async generalStatistic(query: GeneralStatistic) {
+    return await this.salesRepository.query(
+      `
+          --- Total customer.
+      with total_customer as (
+        select count(*)::BIGINT as value, 'Customers' as label from customers customer
+      ),
+      -- Total current customer example in this month
+      total_current_customer as (
+        select count(*)::BIGINT as value, 'New customers' as label from customers customer
+        where extract(epoch from customer."createdAt") between $1 and $2
+      ),
+      -- Total previous customer example in last month
+      total_previous_customer as (
+        select count(*)::BIGINT as value, null as label from customers customer
+        where extract(epoch from customer."createdAt") between $3 and $4
+      ),
+      -- Total revenue in this month
+      total_current_revenue as (
+        select sum(sale.amount * product.price) as value, 'Revenue' as label from sales sale
+        left join products product on product.id = sale.product_id
+        where extract(epoch from sale."createdAt") between $1 and $2
+      ),
+      -- Total revenue last  month
+      total_previous_revenue as (
+        select sum(sale.amount * product.price) as value, 'Total revenue' as label from sales sale
+        left join products product on product.id = sale.product_id
+        where extract(epoch from sale."createdAt") between $3 and $4
+      ),
+      -- Total revenue
+      total_revenue as (
+        select sum(sale.amount * product.price) as value, 'Total revenue' as label from sales sale
+        left join products product on product.id = sale.product_id
+      )
+      select *, null as delta from total_customer
+      union
+      select total_current_customer.value, total_current_customer.label ,(total_current_customer.value / total_previous_customer.value * 100)  as delta 
+      from total_current_customer left join  total_previous_customer on 1=1
+      union 
+      select *, null as delta from total_revenue
+      union
+      select total_current_revenue.value, total_current_revenue.label ,(total_current_revenue.value / total_previous_revenue.value * 100)  as delta 
+      from total_current_revenue left join  total_previous_revenue on 1=1
+    `,
+      [query.from, query.to, query.previousFrom, query.previousTo],
     );
   }
 }

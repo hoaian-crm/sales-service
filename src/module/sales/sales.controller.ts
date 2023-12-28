@@ -4,6 +4,7 @@ import { Response } from 'crm-prototypes';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FindSalesDto } from './dto/find';
 import {
+  GeneralStatistic,
   TopTotalSoldProduct,
   TotalRevenue,
   TotalRevenueByProduct,
@@ -82,6 +83,17 @@ export class SalesController {
   @Get('/total_revenue')
   async totalRevenue(@Query() query: TotalRevenue) {
     const data = await this.statisticService.totalRevenue(query);
+    return Response.findSuccess([data, data.length]);
+  }
+
+  @ApiMetaData({
+    description: 'Get general statistic',
+    name: 'Get general statistic',
+    policy: 'sales:general_statistic',
+  })
+  @Get('/general_statistic')
+  async generalStatistic(@Query() query: GeneralStatistic) {
+    const data = await this.statisticService.generalStatistic(query);
     return Response.findSuccess([data, data.length]);
   }
 }

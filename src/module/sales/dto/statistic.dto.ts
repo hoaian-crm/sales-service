@@ -57,3 +57,25 @@ export class TotalRevenue {
   @IsOptional()
   to: number = new Date().getTime();
 }
+
+export class GeneralStatistic {
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  from: number = 0;
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  to: number = new Date().getTime();
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  previousFrom: number = 0;
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  previousTo: number = new Date().getTime();
+}
