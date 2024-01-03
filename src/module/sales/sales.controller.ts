@@ -27,8 +27,8 @@ export class SalesController {
   })
   @Get()
   async getAll(@Query() query: FindSalesDto) {
-    const [result, count] = await this.salesService.getAllSales(query);
-    return Response.findSuccess([result, count]);
+    const value = await this.salesService.getAllSales(query);
+    return Response.findSuccess([value, value.length]);
   }
 
   @ApiMetaData({
