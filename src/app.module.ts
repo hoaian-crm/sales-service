@@ -20,7 +20,7 @@ import { ResourceTagModule } from './module/resource_tag/resource_tag.module';
       logging: process.env.NODE_ENV === 'development',
     }),
     SalesModule,
-    ResourceTagModule
+    ResourceTagModule,
   ],
 })
 export class AppModule {}

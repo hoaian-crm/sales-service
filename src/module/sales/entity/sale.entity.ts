@@ -30,6 +30,6 @@ export class Sale extends Base {
   @Column()
   status: string;
 
-  @OneToMany(() => ResourceTags, (tag) => tag.sale, {eager: true})
+  @OneToMany(() => ResourceTags, (tag) => tag.sale, { eager: true })
   tags: ResourceTags[];
 }
