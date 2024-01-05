@@ -1,17 +1,16 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
 import { Product } from './product.entiry';
+import { Base } from './Base.entity';
 
 @Entity('sales')
-export class Sale {
+export class Sale extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,10 +27,4 @@ export class Sale {
 
   @Column()
   status: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

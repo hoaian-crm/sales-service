@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SalesModule } from './module/sales/sales.module';
+import { ResourceTags } from './module/sales/entity/resource_tags.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SalesModule } from './module/sales/sales.module';
       port: +process.env.PG_PORT,
       autoLoadEntities: true,
       logging: process.env.NODE_ENV === 'development',
+      entities: [ResourceTags],
     }),
     SalesModule,
   ],

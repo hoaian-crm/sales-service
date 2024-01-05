@@ -16,28 +16,34 @@ export class SalesService {
   ) {}
 
   async getAllSales(query: FindSalesDto) {
-    const value: any[] = await this.salesRepository.query(
-      `
-      SELECT sales.*,
-      COALESCE(JSON_AGG(resource_tags.*) FILTER (WHERE resource_tags.id IS NOT NULL) ,'[]') AS tags,
-      JSON_BUILD_OBJECT('id', products.id, 'name',products."name",'alias', products.alias, 'price', products.price, 'discount', products.discount) AS product,
-      JSON_BUILD_OBJECT('id', customers.id, 'name',customers."name", 'email', customers.email, 'phone', customers.phone) AS customer
-      FROM sales
-      LEFT JOIN 
-          resource_tags ON sales.id = resource_tags.resource_id and resource_tags.resource ='sales'
-      LEFT JOIN 
-          products ON sales.product_id = products.id
-      LEFT JOIN 
-          customers ON sales.customer_id = customers.id
-      GROUP BY 
-          sales.id, sales.status, sales."createdAt", sales."updatedAt", sales.product_id, sales.customer_id, sales.amount, products.id, customers.id
-      LIMIT $1
-      OFFSET $2
-    `,
-      [query.limit, query.offset],
-    );
+    // const value: any[] = await this.salesRepository.query(
+    //   `
+    //   SELECT sales.*,
+    //   COALESCE(JSON_AGG(resource_tags.*) FILTER (WHERE resource_tags.id IS NOT NULL) ,'[]') AS tags,
+    //   JSON_BUILD_OBJECT('id', products.id, 'name',products."name",'alias', products.alias, 'price', products.price, 'discount', products.discount) AS product,
+    //   JSON_BUILD_OBJECT('id', customers.id, 'name',customers."name", 'email', customers.email, 'phone', customers.phone) AS customer
+    //   FROM sales
+    //   LEFT JOIN
+    //       resource_tags ON sales.id = resource_tags.resource_id and resource_tags.resource ='sales'
+    //   LEFT JOIN
+    //       products ON sales.product_id = products.id
+    //   LEFT JOIN
+    //       customers ON sales.customer_id = customers.id
+    //   GROUP BY
+    //       sales.id, sales.status, sales."createdAt", sales."updatedAt", sales.product_id, sales.customer_id, sales.amount, products.id, customers.id
+    //   LIMIT $1
+    //   OFFSET $2
+    // `,
+    //   [query.limit, query.offset],
+    // );
 
-    return value;
+    const result = await this.salesRepository.findAndCount({
+      take: query.limit,
+      skip: query.offset,
+      relations: ['product', 'tags'],
+    });
+
+    return result;
   }
 
   async updateSales(id: number, dto: UpdateSaleDto) {
@@ -144,5 +150,12 @@ export class SalesService {
     `,
       [query.from, query.to],
     );
+  }
+
+  getValue(value: { value: string }, defaultResource: string) {
+    return {
+      value: value.value,
+      resource: defaultResource,
+    };
   }
 }
