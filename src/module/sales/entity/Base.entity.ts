@@ -1,17 +1,19 @@
+import { ResourceTags } from 'src/module/resource_tag/resource_tags.entity';
 import {
   CreateDateColumn,
+  JoinColumn,
+  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ResourceTags } from './resource_tags.entity';
 
 export abstract class Base {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => ResourceTags, (r_tag) => r_tag.id)
-  tags: ResourceTags[];
+  // @OneToMany(() => ResourceTags, (tag) => tag.id)
+  // tags: ResourceTags[];
 
   @CreateDateColumn()
   createdAt: Date;

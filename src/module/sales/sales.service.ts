@@ -40,7 +40,7 @@ export class SalesService {
     const result = await this.salesRepository.findAndCount({
       take: query.limit,
       skip: query.offset,
-      relations: ['product', 'tags'],
+      relations: ['product'],
     });
 
     return result;

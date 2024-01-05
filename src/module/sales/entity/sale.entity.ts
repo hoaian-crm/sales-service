@@ -3,11 +3,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
 import { Product } from './product.entiry';
 import { Base } from './Base.entity';
+import { ResourceTags } from 'src/module/resource_tag/resource_tags.entity';
 
 @Entity('sales')
 export class Sale extends Base {
@@ -27,4 +29,7 @@ export class Sale extends Base {
 
   @Column()
   status: string;
+
+  @OneToMany(() => ResourceTags, (tag) => tag.sale, {eager: true})
+  tags: ResourceTags[];
 }
