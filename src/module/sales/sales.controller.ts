@@ -12,6 +12,7 @@ import {
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SalesService } from './sales.service';
 import { StatisticService } from './statistic.service';
+import { DefaultResourceTags } from './custom.decorator';
 
 @AppController('sales')
 export class SalesController {
@@ -95,5 +96,13 @@ export class SalesController {
   async generalStatistic(@Query() query: GeneralStatistic) {
     const data = await this.statisticService.generalStatistic(query);
     return Response.findSuccess([data, data.length]);
+  }
+
+  @Get(':value')
+  getValue(
+    @Param() value: { value: string },
+    @DefaultResourceTags('value') defaultValue: string,
+  ) {
+    return this.salesService.getValue(value, defaultValue);
   }
 }

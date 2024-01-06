@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SalesModule } from './module/sales/sales.module';
+import { ResourceTagModule } from './module/resource_tag/resource_tag.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SalesModule } from './module/sales/sales.module';
       logging: process.env.NODE_ENV === 'development',
     }),
     SalesModule,
+    ResourceTagModule,
   ],
 })
 export class AppModule {}
